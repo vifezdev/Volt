@@ -1,17 +1,17 @@
 package lol.vifez.volt;
 
+import lol.vifez.volt.internal.CommandManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class CommandAPI extends JavaPlugin {
+public class CommandAPI {
 
-    @Override
-    public void onEnable() {
-        // Plugin startup logic
+    private static CommandManager manager;
 
+    public static void init(JavaPlugin plugin) {
+        manager = new CommandManager(plugin);
     }
 
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
+    public static CommandManager getManager() {
+        return manager;
     }
 }
