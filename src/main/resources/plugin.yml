@@ -1,0 +1,4 @@
+name: Volt
+version: '${project.version}'
+main: lol.vifez.volt.CommandAPI
+description: Command api
