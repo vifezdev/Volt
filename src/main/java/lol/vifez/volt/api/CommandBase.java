@@ -3,10 +3,12 @@ package lol.vifez.volt.api;
 import java.util.*;
 
 public abstract class CommandBase {
+
     private final List<String> aliases = new ArrayList<>();
+    private final Map<String, CommandHandler> subcommands = new HashMap<>();
     private String description;
     private CommandHandler defaultHandler;
-    private final Map<String, CommandHandler> subcommands = new HashMap<>();
+    private String permission;
 
     public CommandBase() {
     }
@@ -25,6 +27,14 @@ public abstract class CommandBase {
 
     public void sub(String name, CommandHandler handler) {
         subcommands.put(name.toLowerCase(), handler);
+    }
+
+    public void permission(String permission) {
+        this.permission = permission;
+    }
+
+    public String getPermission() {
+        return permission;
     }
 
     public List<String> getAliases() {

@@ -2,6 +2,7 @@ package lol.vifez.volt.internal;
 
 import lol.vifez.volt.api.CommandBase;
 import lol.vifez.volt.api.CommandHandler;
+import lol.vifez.volt.api.ErrorMessages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -55,20 +56,38 @@ public class CommandManager {
             }
 
             Player player = (Player) sender;
+
+            String permission = base.getPermission();
+            if (permission != null && !player.hasPermission(permission)) {
+                player.sendMessage(ErrorMessages.NO_PERMISSION);
+                return true;
+            }
+
             if (args.length == 0) {
-                if (base.getDefaultHandler() != null) {
-                    base.getDefaultHandler().execute(player, args);
+                CommandHandler defaultHandler = base.getDefaultHandler();
+                if (defaultHandler != null) {
+                    String defaultPerm = defaultHandler.getPermission();
+                    if (defaultPerm != null && !player.hasPermission(defaultPerm)) {
+                        player.sendMessage(ErrorMessages.NO_PERMISSION);
+                        return true;
+                    }
+                    defaultHandler.execute(player, args);
                 }
                 return true;
             }
 
             CommandHandler sub = base.getSubcommands().get(args[0].toLowerCase());
             if (sub != null) {
+                String subPermission = sub.getPermission();
+                if (subPermission != null && !player.hasPermission(subPermission)) {
+                    player.sendMessage(ErrorMessages.NO_PERMISSION);
+                    return true;
+                }
                 sub.execute(player, Arrays.copyOfRange(args, 1, args.length));
                 return true;
             }
 
-            player.sendMessage("§cUnknown command.");
+            player.sendMessage(ErrorMessages.UNKNOWN_COMMAND);
             return true;
         }
     }
