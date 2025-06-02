@@ -37,6 +37,7 @@ Create commands by extending CommandBase and configuring aliases, description, d
 ```java
 
 import lol.vifez.volt.api.CommandBase;
+import org.bukkit.command.CommandSender;
 
 public class TestCommand extends CommandBase {
 
@@ -46,26 +47,79 @@ public class TestCommand extends CommandBase {
         this.plugin = plugin;
 
         aliases("test", "test1");
-
         description("Test command for vifez");
+        permission("vifez.admin");
 
         defaultHandler(this::handleDefault);
     }
 
     private void handleDefault(CommandSender sender, String[] args) {
-        if (!sender.hasPermission("vifez.admin")) {
-            sender.sendMessage("You do not have permission to use this command.");
-            return;
-        }
 
         sender.sendMessage("example");
     }
+}
 ```
 
----
-## Registering commands
+# Registering sub commands
+You can add subcommands easily using the `sub` method inside your command class. This allows you to handle different subcommands with separate handlers.
+
+Example:
+
 ```java
-commandManager.register(new TestCommand());
+import lol.vifez.volt.api.CommandBase;
+import org.bukkit.command.CommandSender;
+
+public class TestCommand extends CommandBase {
+
+    private final TestPlugin plugin;
+
+    public TestCommand(TestPlugin plugin) {
+        this.plugin = plugin;
+
+        aliases("test", "test1");
+        description("Test command for vifez");
+        permission("vifez.admin");
+
+        defaultHandler(this::handleDefault);
+
+        // Register subcommand "hello"
+        sub("hello", this::handleHello);
+    }
+
+    private void handleDefault(CommandSender sender, String[] args) {
+        sender.sendMessage("This is the default command response.");
+    }
+
+    private void handleHello(CommandSender sender, String[] args) {
+        sender.sendMessage("Hello world");
+    }
+}
+```
+---
+# Registering commands
+
+You can register commands inside a dedicated method (e.g., `registerCommands()`) in your plugins main class
+
+Example:
+```java
+import lol.vifez.volt.internal.CommandManager;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public final class ExamplePlugin extends JavaPlugin {
+
+    private CommandManager commandManager;
+
+    @Override
+    public void onEnable() {
+        registerCommands();
+    }
+
+    public void registerCommands() {
+        this.commandManager = new CommandManager(this);
+        this.commandManager.register(new ExampleCommand(this));
+    }
+}
+
 ```
 
 ---
