@@ -54,6 +54,7 @@ public class TestCommand extends CommandBase {
     }
 
     private void handleDefault(CommandSender sender, String[] args) {
+    // add ur cmd logic here
 
         sender.sendMessage("example");
     }
