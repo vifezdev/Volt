@@ -35,19 +35,31 @@ public void onEnable() {
 ## Creating commands
 Create commands by extending CommandBase and configuring aliases, description, default handler, and subcommands:
 ```java
+
+import lol.vifez.volt.api.CommandBase;
+
 public class TestCommand extends CommandBase {
 
-    public TestCommand() {
-        aliases("test", "t");
-        description("A test command");
+    private final TestPlugin plugin;
 
-        // Default command behavior (/t)
-        defaultHandler((player, args) -> player.sendMessage("Hello world"));
+    public TestCommand(TestPlugin plugin) {
+        this.plugin = plugin;
 
-        // Subcommand example (/t sub)
-        sub("sub", (player, args) -> player.sendMessage("subcommand fr"));
+        aliases("test", "test1");
+
+        description("Test command for vifez");
+
+        defaultHandler(this::handleDefault);
     }
-}
+
+    private void handleDefault(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("vifez.admin")) {
+            sender.sendMessage("You do not have permission to use this command.");
+            return;
+        }
+
+        sender.sendMessage("example");
+    }
 ```
 
 ---
